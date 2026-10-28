@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices.Marshalling;
 using System.Security.Principal;
 
 namespace Lab4
@@ -59,9 +62,10 @@ namespace Lab4
         public int[] Task3(int[] array)
         {
             int[] negatives = null;
+
+            // code here
             int max = array[0];
             int min = array[0];
-            // code here
             for (int i = 0; i < array.Length; i++)
             {
                 max = Math.Max(max, array[i]);
@@ -69,17 +73,20 @@ namespace Lab4
             }
             int cmax = -1;
             int cmin = -1;
-            for (int i = 0; i < array.Length; i++)
+            for(int i = 0; i < array.Length; i++)
             {
-                if (array[i] == max) cmax = i;
-                if (array[i] == min) cmin = i;
+                if (array[i] == max && cmax == -1) cmax = i;
+                if (array[i] == min && cmin == -1) cmin = i;
             }
-            int countminus = 0;
+            int schet = 0;
             for (int i = Math.Min(cmax, cmin) + 1; i < Math.Max(cmax, cmin); i++)
             {
-                if (array[i] < 0) countminus++;
+                if (array[i] < 0)
+                {
+                    schet++;
+                }
             }
-            negatives = new int[countminus];
+            negatives = new int[schet];
             int index = 0;
             for (int i = Math.Min(cmax, cmin) + 1; i < Math.Max(cmax, cmin); i++)
             {
@@ -96,30 +103,24 @@ namespace Lab4
         {
 
             // code here
-            int max = -2 * 10000;
+            int max = array[0];
             int cmax = 0;
+            int cfirstminus = -1;
             for (int i = 0; i < array.Length; i++)
             {
                 if (array[i] > max)
                 {
                     max = array[i];
-                    i = cmax;
+                    cmax = i;
                 }
+                if (cfirstminus == -1 && array[i] < 0) cfirstminus = i;
             }
-
-            int firstminus = 0;
-            int cfirstminus = 0;
-            for (int i = 0; i < array.Length; i++)
+            if (cfirstminus != -1)
             {
-                if (array[i] < 0)
-                {
-                    firstminus = array[i];
-                    cfirstminus = i;
-                    break;
-                }
+                int zna4 = array[cmax];
+                array[cmax] = array[cfirstminus];
+                array[cfirstminus] = zna4;
             }
-            array[cfirstminus] = max;
-            array[cmax] = firstminus;
             // end
 
         }
@@ -240,7 +241,32 @@ namespace Lab4
             int[] cleared = null;
 
             // code here
-
+            int nepovtor = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                bool est = false;
+                for (int j = 0; j < i; j++)
+                {
+                    if (array[i] == array[j]) est = true;
+                    
+                }
+                if (est == false) nepovtor++;
+            }
+            cleared = new int[nepovtor];
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                bool est = false;
+                for (int j = 0; j < i; j++)
+                {
+                    if (array[i] == array[j]) est = true;
+                }
+                if (est == false)
+                {
+                    cleared[index] = array[i];
+                    index++;
+                }
+            }
             // end
 
             return cleared;
@@ -250,7 +276,35 @@ namespace Lab4
             double[] A = null, B = null;
 
             // code here
+            if (n <= 1 || a == b) return null;
 
+            A = new double[n];
+            double sum = 0;
+            double shag = (b - a) / (n - 1);
+            int polozh = 0;
+            for (int i = 0; i < n; i++)
+            {
+                A[i] = a + i * shag;
+                if (A[i] > 0)
+                {
+                    sum += A[i];
+                    polozh++;
+                }
+            }
+            if (polozh == 0) return new double[0];
+            double sr = sum / polozh;
+            int schet = 0;
+            for (int i = 0; i < n; i++) if (A[i] > sr + 1e-9) schet++;
+            B = new double[schet];
+            int index = 0;
+            for (int i = 0; i < n; i++)
+            {
+                if (A[i] > sr + 1e-9)
+                {
+                    B[index] = A[i];
+                    index++;
+                }
+            }
             // end
 
             return B;
