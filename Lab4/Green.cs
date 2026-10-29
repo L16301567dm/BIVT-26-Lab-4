@@ -314,7 +314,23 @@ namespace Lab4
             int wins = 0;
 
             // code here
+            int[] shuler = new int[dices.Length];
+            for (int i = 0; i < shuler.Length; i++)
+            {
+                if (i == 0) shuler[i] = 6;
+                else shuler[i] = shuler[i - 1] > 1 ? shuler[i - 1] - 1 : 1;
+            }
 
+            int[] orig = (int[])dices.Clone();
+
+            for (int i = 0; i < dices.Length; i++)
+            {
+                if (orig[i] == 6)
+                {
+                    for (int j = i + 1; j < dices.Length; j++) if (dices[j] > 1) dices[j]--; 
+                }
+                if (dices[i] > shuler[i]) wins++;
+            }
             // end
 
             return wins;
